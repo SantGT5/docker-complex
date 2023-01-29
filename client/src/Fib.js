@@ -25,7 +25,7 @@ export const Fib = () => {
     const { data } = await axios.get("/api/values/all");
 
     setData((current) => {
-      return { ...current, values: data };
+      return { ...current, seenIndexes: data };
     });
   };
 
@@ -40,20 +40,23 @@ export const Fib = () => {
   };
 
   const renderSeenIndexes = () => {
-    if (data.seenIndexes.length) return 
     return data.seenIndexes.map(({ number }) => number).join(", ");
   };
 
   const renderValues = () => {
-    const { values } = data; 
+    const { values } = data;
 
-    if (0 === Object.keys(values).length) return
+    const entries = [];
 
-    return values.forEach((_, i) => {
-      <div key={i}>
-        For index {i} I calculated {values[i]}
-      </div>;
-    });
+    for (let key in values) {
+      entries.push(
+        <div key={key}>
+          For index {key} I calculated {values[key]}
+        </div>
+      );
+    }
+
+    return entries;
   };
 
   return (
@@ -64,7 +67,7 @@ export const Fib = () => {
           value={data.index}
           onChange={(e) =>
             setData((current) => {
-              return { ...current, index: e.currentTarget.value };
+              return { ...current, index: e.target.value };
             })
           }
         />
