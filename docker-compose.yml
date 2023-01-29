@@ -49,6 +49,8 @@ services:
       # "./client" is where our Docker.dev is (folder name)
       # "./app" is our "WORKDIR"
       - ./client:/app
+    environment:
+      - WDS_SOCKET_PORT=0
 
   worker:
     build:
