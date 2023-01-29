@@ -1,6 +1,5 @@
 version: "3"
 services:
-
   postgres:
     image: postgres:15.1
     environment:
@@ -18,9 +17,11 @@ services:
       context: ./nginx
       dockerfile: Dockerfile.dev
     ports:
-    - "3050:80"
+      - "3050:80"
 
   api:
+    depends_on:
+      - postgres
     build:
       context: ./server
       dockerfile: Dockerfile.dev
@@ -39,7 +40,7 @@ services:
       - PG_PORT=5432
 
   client:
-    stdin_open: true # to fix bug in create-react-app
+    stdin_open: true # fix bug in create-react-app
     build:
       context: ./client
       dockerfile: Dockerfile.dev

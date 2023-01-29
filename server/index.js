@@ -16,10 +16,12 @@ const redis = require("redis");
 
 // express
 const app = express();
-app.use(cors({
-  origin: '*',
-  optionsSuccessStatus: 200
-}));
+app.use(
+  cors({
+    origin: "*",
+    optionsSuccessStatus: 200,
+  })
+);
 app.use(bodyParser.json());
 
 // postgres
@@ -30,6 +32,8 @@ const pgClient = new Pool({
   password: pgPassword,
   port: pgPort,
 });
+
+pgClient.query("CREATE TABLE IF NOT EXISTS values (number INT)");
 
 pgClient.on("connect", (client) => {
   client
@@ -52,17 +56,13 @@ app.get("/", (req, res) => {
 });
 
 app.get("/values/all", async (req, res) => {
-    const values = await pgClient.query("SELECT * from values");
-  
-    res.send(values.rows);
+  const values = await pgClient.query("SELECT * from values");
+
+  res.send(values.rows);
 });
 
 app.get("/values/current", async (req, res) => {
-  console.log("poipoipkncojednwfoj")
   await redisClient.hgetall("values", (err, values) => {
-    if (err) {
-      return res.status(400).json(err)
-    }
     return res.send(values);
   });
 });
@@ -75,7 +75,7 @@ app.post("/values", async (req, res) => {
   }
 
   redisClient.hset("values", index, "Nothing yet!");
-  redisPublisher.publish('insert', index);
+  redisPublisher.publish("insert", index);
 
   pgClient.query("INSERT INTO values(number) VALUES($1)", [index]);
 
