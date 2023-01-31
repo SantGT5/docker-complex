@@ -5,7 +5,7 @@
     "redis": "2.8.0",
     "cors": "^2.8.5",
     "nodemon": "^2.0.20",
-    "body-parser":"^1.20.1"
+    "body-parser": "^1.20.1"
   },
   "scripts": {
     "dev": "nodemon index.js",
