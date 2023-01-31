@@ -21,13 +21,12 @@ jobs:
         run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login docker.io -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
 
       - run: docker build -t santgt5/react-client ./client
+      - run: docker run -e CI=true santgt5/react-client npm run test
+      
       - run: docker build -t santgt5/nginx-complex ./nginx
       - run: docker build -t santgt5/server-complex ./server
       - run: docker build -t santgt5/worker-complex ./worker
-        name: Build containers
 
-      - name: Run unit test on client container
-        run: docker run -e CI=true santgt5/react-client npm run test
 
       - run: docker push santgt5/react-client
       - run: docker push santgt5/nginx-complex
