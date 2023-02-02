@@ -22,7 +22,7 @@ jobs:
 
       - run: docker build -t santgt5/react-test -f ./client/Dockerfile.dev ./client
       - run: docker run -e CI=true santgt5/react-test npm run test
-      
+
       - run: docker build -t santgt5/client-complex-pro ./client
       - run: docker build -t santgt5/nginx-complex ./nginx
       - run: docker build -t santgt5/server-complex ./server

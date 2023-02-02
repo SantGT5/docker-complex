@@ -1,0 +1,66 @@
+version: "3"
+services:
+  postgres:
+    image: postgres:15.1
+    environment:
+      - POSTGRES_PASSWORD=postgres_password
+
+  redis:
+    image: redis:7.0.8-alpine
+
+  nginx:
+    restart: always
+    depends_on:
+      - api
+      - client
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile.dev
+    ports:
+      - "3050:80"
+
+  api:
+    depends_on:
+      - postgres
+    build:
+      context: ./server
+      dockerfile: Dockerfile.dev
+    volumes:
+      - /app/node_modules
+      # "./server" is where our Docker.dev is (folder name)
+      # "./app" is our "WORKDIR"
+      - ./server:/app
+    environment:
+      - REDIS_HOST=redis # service name that we defined
+      - REDIS_PORT=6379
+      - PG_USER=postgres
+      - PG_HOST=postgres # service name that we defined
+      - PG_DATABASE=postgres
+      - PG_PASSWORD=postgres_password
+      - PG_PORT=5432
+
+  client:
+    stdin_open: true # fix bug in create-react-app
+    build:
+      context: ./client
+      dockerfile: Dockerfile.dev
+    volumes:
+      - /app/node_modules
+      # "./client" is where our Docker.dev is (folder name)
+      # "./app" is our "WORKDIR"
+      - ./client:/app
+    environment:
+      - WDS_SOCKET_PORT=0
+
+  worker:
+    build:
+      context: ./worker
+      dockerfile: Dockerfile.dev
+    volumes:
+      - /app/node_modules
+      # "./worker" is where our Docker.dev is (folder name)
+      # "./app" is our "WORKDIR"
+      - ./worker:/app
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
