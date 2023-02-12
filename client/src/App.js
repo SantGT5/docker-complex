@@ -8,7 +8,7 @@ import { Fib } from "./Fib";
 function App() {
   return (
     <BrowserRouter>
-      <h1>Hey</h1>
+      <h1>Fib Calculator Version 2</h1>
       <Link to="/">Home</Link>
       <Link to="/otherpage">Other page</Link>
       <Routes>
